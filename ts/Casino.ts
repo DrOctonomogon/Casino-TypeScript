@@ -1,12 +1,14 @@
 /// <reference path="User.ts"/>
 /// <reference path="Craps.ts"/>
 ///<reference path="BlackJack.ts"/>
-
+/// <reference path="CrapsConsole.ts"/>
+/// <reference path="GoFishConsole.ts"/>
 
 class Casino {
 
     craps: CrapsConsole;
     blackjack: BlackJackConsole;
+    goFish: GoFishConsole;
     havePlayer: boolean = false;
 ////////
     inputElement: any;
@@ -31,7 +33,6 @@ class Casino {
     // }
 
 ////////
-
 
     run(): void {
         if (this.havePlayer) {
@@ -59,6 +60,7 @@ class Casino {
         this.havePlayer = true;
         this.craps = new CrapsConsole(user);
         this.blackjack = new BlackJackConsole(user);
+        this.goFish = new GoFishConsole(user);
         this.run();
     }
 

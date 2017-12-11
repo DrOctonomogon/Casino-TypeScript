@@ -37,8 +37,6 @@ class CrapsConsole {
     }
 
     finalize(): void {
-        // this.inputElement.innerHTML= '<input type="text" name="user_input" id="user_input"> ' +
-        //                                     '<input type="submit" value="Submit" onclick="casino.run()">';
         this.displayElement.innerText = '';
         this.resetFlags();
         casino.run();
@@ -192,7 +190,7 @@ class CrapsConsole {
     }
 
     resolveInitialThrowBet(a: number): void {
-        if(a == 1) {
+        if (a == 1) {
             if (this.game.getPlayerTurn()) {//If the thrower is the player and they won, pay them
                 this.playerWinsBothPots();//Player wins the pot and we go back to bet again
             }
@@ -203,8 +201,7 @@ class CrapsConsole {
                 //method's return
             }
         }
-        else
-        {
+        else {
             if (this.game.getPlayerTurn()) {//If the thrower is the player and they lost, empty the pot and bet again
                 this.opponentWinsBothPots();
             }
@@ -234,194 +231,174 @@ class CrapsConsole {
             }
         }//end switch
     }
-resolveSecondaryThrowBet(a: number): void{
-    if(a == 1) {//Point met, pay out thrower from mainPot and sidePot
-        if (this.game.getPlayerTurn()) {//if player is the thrower, give them the pots and then reset bet vars
-            this.playerWinsBothPots();
 
+    resolveSecondaryThrowBet(a: number): void {
+        if (a == 1) {//Point met, pay out thrower from mainPot and sidePot
+            if (this.game.getPlayerTurn()) {//if player is the thrower, give them the pots and then reset bet vars
+                this.playerWinsBothPots();
+
+            }
+            else//if player is not the thrower, empty pot and reset bet vars
+            {
+                this.opponentWinsBothPots();
+            }
         }
-        else//if player is not the thrower, empty pot and reset bet vars
+        else if (a == -1)//Crapped out. Pay out the non-thrower from mainPot and sidePot
         {
-            this.opponentWinsBothPots();
+            if (this.game.getPlayerTurn()) {
+                this.opponentWinsBothPots();
+            }
+            else {
+                this.playerWinsBothPots();
+            }
+        } else {//Won the pair, but not the point. Pay non-thrower the sidePot
+            if (this.game.getPlayerTurn()) {
+                this.playerWinsSidePot();
+            }
+            else {
+                this.opponentWinsSidePot();
+            }
         }
     }
-    else
-        if (a == -1)//Crapped out. Pay out the non-thrower from mainPot and sidePot
-    {
-    if (this.game.getPlayerTurn()) {
-        this.opponentWinsBothPots();
+
+    displayOpponentBetting(passedOpponentBet: number): void {//Called _AFTER_ the money transfers have already taken place
+
+        updateDisplay("Opponent bets $" + passedOpponentBet.toFixed(2));
+        updateDisplay("You match $" + passedOpponentBet.toFixed(2));
+        updateDisplay("You have $" + this.player.Wallet.getMoney().toFixed(2) + " in your wallet");
+        this.printPots();
+        this.enterAnyKeyToContinue();
     }
-    else {
-        this.playerWinsBothPots();
+
+    displayPlayerBetting(passedPlayerBet: number): void {//Called _AFTER_ the money transfers have already taken place
+        //_AND_ after the player enters their bet amount
+        updateDisplay("You bet $" + passedPlayerBet.toFixed(2)
+        )
+        ;
+        updateDisplay("Opponent matches $" + passedPlayerBet.toFixed(2));
+        updateDisplay("You have $" + this.player.Wallet.getMoney().toFixed(2) + " in your wallet");
+        this.printPots();
+        this.enterAnyKeyToContinue();
     }
-    } else {//Won the pair, but not the point. Pay non-thrower the sidePot
-        if (this.game.getPlayerTurn()) {
-            this.playerWinsSidePot();
-        }
-        else {
-            this.opponentWinsSidePot();
-        }
+
+    firstPointRolled(): void {
+        updateDisplay(this.game.getNumberRolled() + " was rolled... that's our new point."
+        )
+        ;
+        updateDisplay("You have $" + this.player.Wallet.getMoney().toFixed(2) + " in your wallet now.");
+        this.printPots();
+        this.enterAnyKeyToContinue();
+
     }
-}
 
-displayOpponentBetting(passedOpponentBet
-:
-number
-):
-void{//Called _AFTER_ the money transfers have already taken place
+    neitherWinsAnyPot(): void {
+        updateDisplay("A " + this.game.getNumberRolled() + " was rolled... nothing special."
+        )
+        ;
+        updateDisplay("You have $" + this.player.Wallet.getMoney().toFixed(2) + " in your wallet now.");
+        this.printPots();
+        this.enterAnyKeyToContinue();
+    }
 
-updateDisplay("Opponent bets $" + passedOpponentBet.toFixed(2));
-updateDisplay("You match $" + passedOpponentBet.toFixed(2));
-updateDisplay("You have $" + this.player.Wallet.getMoney().toFixed(2) + " in your wallet");
-this.printPots();
-this.enterAnyKeyToContinue();
-}
-displayPlayerBetting(passedPlayerBet
-:
-number
-):
-void{//Called _AFTER_ the money transfers have already taken place
-    //_AND_ after the player enters their bet amount
-    updateDisplay("You bet $"+passedPlayerBet.toFixed(2)
-)
-;
-updateDisplay("Opponent matches $" + passedPlayerBet.toFixed(2));
-updateDisplay("You have $" + this.player.Wallet.getMoney().toFixed(2) + " in your wallet");
-this.printPots();
-this.enterAnyKeyToContinue();
-}
+    playerWinsSidePot(): void {
 
-firstPointRolled()
-:
-void{
-    updateDisplay(this.game.getNumberRolled() + " was rolled... that's our new point."
-)
-;
-updateDisplay("You have $" + this.player.Wallet.getMoney().toFixed(2) + " in your wallet now.");
-this.printPots();
-this.enterAnyKeyToContinue();
+        updateDisplay("A " + this.game.getNumberRolled() + " was rolled, and you won the Side Pot!"
+        )
+        ;
+        updateDisplay("$" + this.game.getSidePot().getMoney().toFixed(2) + " from Side Pot");
 
-}
-neitherWinsAnyPot()
-:
-void{
-    updateDisplay("A "+this.game.getNumberRolled() + " was rolled... nothing special."
-)
-;
-updateDisplay("You have $" + this.player.Wallet.getMoney().toFixed(2) + " in your wallet now.");
-this.printPots();
-this.enterAnyKeyToContinue();
-}
-playerWinsSidePot()
-:
-void{
+        this.player.Wallet.addMoney(this.game.emptySidePot());
 
-    updateDisplay("A "+this.game.getNumberRolled() + " was rolled, and you won the Side Pot!"
-)
-;
-updateDisplay("$" + this.game.getSidePot().getMoney().toFixed(2) + " from Side Pot");
+        updateDisplay("You have $" + this.player.Wallet.getMoney().toFixed(2) + " in your wallet now");
+        this.printPots();
 
-this.player.Wallet.addMoney(this.game.emptySidePot());
+        this.enterAnyKeyToContinue();
 
-updateDisplay("You have $" + this.player.Wallet.getMoney().toFixed(2) + " in your wallet now");
-this.printPots();
+        this.sidePotBet = 0;
+    }
 
-this.enterAnyKeyToContinue();
+    opponentWinsSidePot(): void {
+        updateDisplay("A " + this.game.getNumberRolled() + " was rolled, and your opponent won the Side Pot!"
+        )
+        ;
+        updateDisplay("$" + this.game.getSidePot().getMoney().toFixed(2) + " from Side Pot");
 
-this.sidePotBet = 0;
-}
-opponentWinsSidePot()
-:
-void{
-    updateDisplay("A "+this.game.getNumberRolled() + " was rolled, and your opponent won the Side Pot!"
-)
-;
-updateDisplay("$" + this.game.getSidePot().getMoney().toFixed(2) + " from Side Pot");
+        this.sidePotBet = this.game.emptySidePot();
 
-this.sidePotBet = this.game.emptySidePot();
+        updateDisplay("You have $" + this.player.Wallet.getMoney().toFixed(2) + " in your wallet now");
+        this.printPots();
 
-updateDisplay("You have $" + this.player.Wallet.getMoney().toFixed(2) + " in your wallet now");
-this.printPots();
+        this.enterAnyKeyToContinue();
 
-this.enterAnyKeyToContinue();
+        this.sidePotBet = 0;
+    }
 
-this.sidePotBet = 0;
-}
-opponentWinsBothPots()
-:
-void{
-    updateDisplay("A "+this.game.getNumberRolled() + " was rolled, and your opponent won everything!"
-)
-;
-updateDisplay("$" + this.game.getMainPot().getMoney().toFixed(2) + " from Main Pot");
-updateDisplay("$" + this.game.getSidePot().getMoney().toFixed(2) + " from Side Pot");
+    opponentWinsBothPots(): void {
+        updateDisplay("A " + this.game.getNumberRolled() + " was rolled, and your opponent won everything!"
+        )
+        ;
+        updateDisplay("$" + this.game.getMainPot().getMoney().toFixed(2) + " from Main Pot");
+        updateDisplay("$" + this.game.getSidePot().getMoney().toFixed(2) + " from Side Pot");
 
-this.mainPotBet = this.game.emptyPot();
-this.sidePotBet = this.game.emptySidePot();
+        this.mainPotBet = this.game.emptyPot();
+        this.sidePotBet = this.game.emptySidePot();
 
-updateDisplay("You have $" + this.player.Wallet.getMoney().toFixed(2) + " in your wallet now");
-this.printPots();
+        updateDisplay("You have $" + this.player.Wallet.getMoney().toFixed(2) + " in your wallet now");
+        this.printPots();
 
-this.enterAnyKeyToContinue();
+        this.enterAnyKeyToContinue();
 
-this.mainPotBet = 0;
-this.sidePotBet = 0;
-}
-playerWinsBothPots()
-:
-void{
+        this.mainPotBet = 0;
+        this.sidePotBet = 0;
+    }
 
-    updateDisplay("A "+this.game.getNumberRolled() + " was rolled, and you won everything!"
-)
-;
-updateDisplay("$" + this.game.getMainPot().getMoney().toFixed(2) + " from Main Pot");
-updateDisplay("$" + this.game.getSidePot().getMoney().toFixed(2) + " from Side Pot");
+    playerWinsBothPots(): void {
 
-this.player.Wallet.addMoney(this.game.emptyPot());
-this.player.Wallet.addMoney(this.game.emptySidePot());
+        updateDisplay("A " + this.game.getNumberRolled() + " was rolled, and you won everything!"
+        )
+        ;
+        updateDisplay("$" + this.game.getMainPot().getMoney().toFixed(2) + " from Main Pot");
+        updateDisplay("$" + this.game.getSidePot().getMoney().toFixed(2) + " from Side Pot");
 
-updateDisplay("You have $" + this.player.Wallet.getMoney().toFixed(2) + " in your wallet now");
-this.printPots();
+        this.player.Wallet.addMoney(this.game.emptyPot());
+        this.player.Wallet.addMoney(this.game.emptySidePot());
 
-this.enterAnyKeyToContinue();
-this.mainPotBet = 0;
-this.sidePotBet = 0;
-}
+        updateDisplay("You have $" + this.player.Wallet.getMoney().toFixed(2) + " in your wallet now");
+        this.printPots();
 
-welcomePlayer()
-:
-void{
-    updateDisplay("Hello, "+this.player.Name + ". Welcome to the Craps table. Click 'Quit' anytime to leave the game"
-)
-;
-updateDisplay("Roll to determine who goes first!");
-}
-changeTurns()
-:
-void{
-    this.resetFlags();
-this.game.changePlayerTurn();
-}
-resetFlags()
-:
-void{
-    this.mainPotBet = 0;
-this.sidePotBet = 0;
-this.pointSet = false;
-this.pointMet = false;
-this.crappedOut = false;
-this.game.resetTurn();
-}
+        this.enterAnyKeyToContinue();
+        this.mainPotBet = 0;
+        this.sidePotBet = 0;
+    }
 
-printPots()
-:
-void{
-    updateDisplay("$"+this.game.getMainPot().getMoney().toFixed(2) + " now in Main Pot"
-)
-;
-updateDisplay("$" + this.game.getSidePot().getMoney().toFixed(2) + " now in Side Pot</br>");
-}
-enterAnyKeyToContinue()
-:
-void{}
+    welcomePlayer(): void {
+        updateDisplay("Hello, " + this.player.Name + ". Welcome to the Craps table. Click 'Quit' anytime to leave the game"
+        )
+        ;
+        updateDisplay("Roll to determine who goes first!");
+    }
+
+    changeTurns(): void {
+        this.resetFlags();
+        this.game.changePlayerTurn();
+    }
+
+    resetFlags(): void {
+        this.mainPotBet = 0;
+        this.sidePotBet = 0;
+        this.pointSet = false;
+        this.pointMet = false;
+        this.crappedOut = false;
+        this.game.resetTurn();
+    }
+
+    printPots(): void {
+        updateDisplay("$" + this.game.getMainPot().getMoney().toFixed(2) + " now in Main Pot"
+        )
+        ;
+        updateDisplay("$" + this.game.getSidePot().getMoney().toFixed(2) + " now in Side Pot</br>");
+    }
+
+    enterAnyKeyToContinue(): void {
+    }
 }
