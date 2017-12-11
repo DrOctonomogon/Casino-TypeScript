@@ -10,30 +10,30 @@ class CrapsConsole {
     quitButton: any;
     submitBetButton: any;
 
-    game: Craps = new Craps();
-    player: User;
-    mainPotBet: number;
-    sidePotBet: number;
-    pointSet: boolean = false;
-    pointMet: boolean = false;
-    crappedOut: boolean = false;
+    game:Craps = new Craps();
+    player:User;
+    mainPotBet:number;
+    sidePotBet:number;
+    pointSet:boolean=false;
+    pointMet:boolean=false;
+    crappedOut:boolean=false;
 
-    constructor(user: User) {
-        this.player = user;
+    constructor(user:User){
+        this.player=user;
     }
 
-    initialize(): void {
-        this.displayElement = document.getElementById("display");
-        this.inputElement = document.getElementById("input");
-        this.inputElement.innerHTML = '<input type="number" name="bet_input" id="bet_input">' +
-            '<input type="submit" value="Bet" id="bet_submit" onclick="" disabled="true"/>    ' +
-            '<input type="button" value="Roll" id="roll" onclick="casino.craps.determineFirstRoller()"/>    ' +
-            '<input type="button" value="Continue" id="continue" onclick="casino.craps.beginInitialPlay()" disabled="true"/>' +
-            '<input type="button" value="Quit" id="quit" onclick="casino.craps.finalize()"/>';
-        this.submitBetButton = document.getElementById("bet_submit");
-        this.rollButton = document.getElementById("roll");
-        this.continueButton = document.getElementById("continue");
-        this.quitButton = document.getElementById("quit");
+    initialize():void{
+        this.displayElement=document.getElementById("display");
+        this.inputElement=document.getElementById("input");
+        this.inputElement.innerHTML= '<input type="number" name="bet_input" id="bet_input">' +
+                                     '<input type="submit" value="Bet" id="bet_submit" onclick="" disabled="true"/>    '  +
+                                     '<input type="button" value="Roll" id="roll" onclick="casino.craps.determineFirstRoller()"/>    ' +
+                                     '<input type="button" value="Continue" id="continue" onclick="casino.craps.beginInitialPlay()" disabled="true"/>' +
+                                     '<input type="button" value="Quit" id="quit" onclick="casino.craps.finalize()"/>';
+        this.submitBetButton=document.getElementById("bet_submit");
+        this.rollButton=document.getElementById("roll");
+        this.continueButton=document.getElementById("continue");
+        this.quitButton=document.getElementById("quit");
     }
 
     finalize(): void {
@@ -262,7 +262,6 @@ class CrapsConsole {
     }
 
     displayOpponentBetting(passedOpponentBet: number): void {//Called _AFTER_ the money transfers have already taken place
-
         updateDisplay("Opponent bets $" + passedOpponentBet.toFixed(2));
         updateDisplay("You match $" + passedOpponentBet.toFixed(2));
         updateDisplay("You have $" + this.player.Wallet.getMoney().toFixed(2) + " in your wallet");

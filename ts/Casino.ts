@@ -10,6 +10,7 @@ class Casino {
     blackjack: BlackJackConsole;
     goFish: GoFishConsole;
     havePlayer: boolean = false;
+
 ////////
     inputElement: any;
     displayElement: any;

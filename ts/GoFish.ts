@@ -343,6 +343,7 @@ class GoFish implements CardGame{
     tableString():string{
         return(this.player.hand.toString()+"<br/>Completed Books: "+this.player.completedBooks+
             "<br/><br/>"+this.dealer.hand.toString()+"<br/>Completed Books:"+this.dealer.completedBooks);
+
     }
 
     isGameOver():boolean{
